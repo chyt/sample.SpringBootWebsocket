@@ -2,7 +2,6 @@ package hello;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +9,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +26,9 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-@RunWith(Arquillian.class)
+import com.ibm.wlp.test.runners.LibertyRunner;
+
+@RunWith(LibertyRunner.class)
 public class GreetingIntegrationTestIT {
 
 	private SockJsClient sockJsClient;
@@ -40,22 +36,6 @@ public class GreetingIntegrationTestIT {
 	private WebSocketStompClient stompClient;
 
 	private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
-
-	@Deployment
-	public static WebArchive createDeployment() {
-
-		// Import Maven runtime dependencies
-		File[] mavenFiles = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeDependencies().resolve()
-				.withTransitivity().asFile();
-
-		// Create deploy file
-		WebArchive war = ShrinkWrap.create(WebArchive.class).addPackage("hello").addAsLibraries(mavenFiles);
-
-		// Show the deploy structure
-		System.out.println(war.toString(true));
-
-		return war;
-	}
 
 	@Before
 	public void setup() {
