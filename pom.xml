@@ -36,17 +36,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.wasdev.maven.tools.targets</groupId>
-			<artifactId>liberty-target</artifactId>
-			<version>16.0.0.4</version>
-			<type>pom</type>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.security.auth.message</groupId>
-					<artifactId>javax.security.auth.message-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>

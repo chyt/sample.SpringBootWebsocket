@@ -1,0 +1,96 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.3.RELEASE'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.wasdev.wlp.gradle.plugins:liberty-gradle-plugin:2.0'
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '1.5.3.RELEASE'
+}
+
+apply plugin: 'war'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'liberty'
+
+group = 'liberty.gradle'
+version = '1'
+
+description = "Spring Boot Websocket Sample Running on WebSphere Liberty"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+     mavenCentral()
+}
+
+ext {
+    // Liberty server properties
+    wlpServerName = 'websocketServer'
+    serverDirectory = "${project.buildDir}/wlp/usr/servers/${wlpServerName}"
+    testServerHttpPort = 9080
+    testServerHttpsPort = 9443
+
+    // This is set in the ibm-web-ext.xml file
+    warContext = 'gs-messaging-stomp-websocket'
+}
+
+springBoot {
+    mainClass = "hello.Application"
+}
+
+war {
+    archiveName = warContext + '.' + extension
+}
+
+liberty {
+    server {
+        configFile = file("src/test/resources/server.xml")
+        bootstrapProperties = ['default.http.port': "${testServerHttpPort}" , 'default.https.port': "${testServerHttpsPort}", 'appContext': "${warContext}", 'appLocation': "${war.archiveName}"]
+        name = 'websocketServer'
+        apps = [war]
+        looseApplication = false
+     }
+}
+
+dependencies {
+	compile ("org.springframework.boot:spring-boot-starter-websocket") {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+	}
+	testCompile "junit:junit:4.12"
+    testCompile "org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:2.2.4"
+    testCompile "org.jboss.arquillian.junit:arquillian-junit-container:1.1.13.Final"
+    testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    compile "org.webjars:webjars-locator:0.32-1"
+    compile "org.webjars:sockjs-client:1.0.2"
+    compile "org.webjars:stomp-websocket:2.3.3"
+    compile "org.webjars:bootstrap:3.3.7"
+    compile "org.webjars:jquery:3.1.0"
+	compileOnly "javax.servlet:javax.servlet-api:3.1.0"
+    libertyRuntime "com.ibm.websphere.appserver.runtime:wlp-webProfile7:17.0.0.2"
+}
+
+task integrationTest(type: Test) {
+    group 'Verification'
+    description 'Runs the integration tests.'
+    reports.html.destination = file("$buildDir/reports/it")
+    reports.junitXml.destination = file("$buildDir/test-results/it")
+    include '**/it/**'
+    exclude '**/unit/**'
+
+    systemProperties = ['liberty.test.port': testServerHttpPort, 'war.context': warContext]
+}
+
+check.dependsOn 'integrationTest'
+integrationTest.dependsOn 'libertyStart', 'testClasses'
+integrationTest.finalizedBy 'libertyStop'
