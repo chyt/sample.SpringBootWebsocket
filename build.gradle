@@ -71,12 +71,14 @@ dependencies {
     testCompile "org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:2.2.4"
     testCompile "org.jboss.arquillian.junit:arquillian-junit-container:1.1.13.Final"
     testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testCompile "org.jboss.arquillian.container:arquillian-wlp-managed-8.5:1.0.0.Beta2"
     compile "org.webjars:webjars-locator:0.32-1"
     compile "org.webjars:sockjs-client:1.0.2"
     compile "org.webjars:stomp-websocket:2.3.3"
     compile "org.webjars:bootstrap:3.3.7"
     compile "org.webjars:jquery:3.1.0"
-	compileOnly "javax.servlet:javax.servlet-api:3.1.0"
+    compileOnly "javax.servlet:javax.servlet-api:3.1.0"
+    compile files("${System.properties['java.home']}/../lib/tools.jar")
     libertyRuntime "com.ibm.websphere.appserver.runtime:wlp-webProfile7:17.0.0.2"
 }
 
