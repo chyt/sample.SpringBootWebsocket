@@ -89,7 +89,6 @@ task integrationTest(type: Test) {
     reports.junitXml.destination = file("$buildDir/test-results/it")
     include '**/it/**'
     exclude '**/unit/**'
-
     systemProperties = ['liberty.test.port': testServerHttpPort, 'war.context': warContext]
 }
 
