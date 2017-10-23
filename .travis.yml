@@ -9,6 +9,3 @@ env:
 
 script:
     - (eval "$TEST_COMMAND")
-
-dist: precise
-sudo: required

@@ -7,7 +7,7 @@
 	</engine>
 	<container qualifier="websphere" default="true">
 		<configuration>
-			<property name="wlpHome">target/wlp</property>
+			<property name="wlpHome">${wlp.home}</property>
 			<property name="serverName">websocketServer</property>
 			<property name="httpPort">9080</property>
 			<property name="outputToConsole">true</property>

@@ -82,7 +82,7 @@ dependencies {
     libertyRuntime "com.ibm.websphere.appserver.runtime:wlp-webProfile7:17.0.0.2"
 }
 
-task integrationTest(type: Test) {
+test {
     group 'Verification'
     description 'Runs the integration tests.'
     reports.html.destination = file("$buildDir/reports/it")
@@ -92,6 +92,5 @@ task integrationTest(type: Test) {
     systemProperties = ['liberty.test.port': testServerHttpPort, 'war.context': warContext]
 }
 
-check.dependsOn 'integrationTest'
-integrationTest.dependsOn 'libertyStart', 'testClasses'
-integrationTest.finalizedBy 'libertyStop'
+test.dependsOn 'libertyStart', 'testClasses'
+test.finalizedBy 'libertyStop'
